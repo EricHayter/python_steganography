@@ -1,5 +1,6 @@
 from PIL import Image
 import os
+import io
 
 
 def open(path: str) -> Image:
@@ -32,11 +33,13 @@ def encrypt(img: Image, msg: str):
         b_value = bin(p[2])[2:]
         bit_data.append([r_value, g_value, b_value])
 
-    
-
     for idx, b in enumerate(bit_msg):
-        new_color = int(bit_data[idx//3][idx % 3][:-2] + b,2)
-        print(bytes(new_color))
-        bit_data[idx//3][idx % 3] = bytes(new_color)
+        new_color = int(bit_data[idx//3][idx % 3][:-2] + b, 2) # converting the binary to an integer
+        bit_data[idx//3][idx % 3] = bytes(new_color) # converting the integer to bytes
+
+    bit_data = "".join(bit_data)
+    bit_data = bit_data.encode()
+    secret_img = Image.open(io.BytesIO(bit_data))
+    secret_img.show()
 
     return bit_data
