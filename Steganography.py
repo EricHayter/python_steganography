@@ -15,16 +15,28 @@ def encrypt(img: Image, msg: str):
     bit_data = []
     bit_msg = []
 
+    # turning our message into a binary representation
     msg = msg.encode('ascii')
     for c in msg:
-        bit_msg.append(bin(c))
+        bit_msg.append(bin(c)[2:])
 
-    #print(bit_msg[0])
+    # TODO check around here if the image can even contain the message
+    bit_msg = "".join(bit_msg)
+    # spliting the binary string every two bits
+    bit_msg = [bit_msg[i:i+2] for i in range(0, len(bit_msg), 2)]
 
+    # could be better performance here since we shouldn't in theory require all of the pixels to be encodedS
     for p in rgb_data:
         r_value = bin(p[0])[2:]  # stripping the leading '0b'
         g_value = bin(p[1])[2:]
         b_value = bin(p[2])[2:]
         bit_data.append([r_value, g_value, b_value])
+
+    
+
+    for idx, b in enumerate(bit_msg):
+        new_color = int(bit_data[idx//3][idx % 3][:-2] + b,2)
+        print(bytes(new_color))
+        bit_data[idx//3][idx % 3] = bytes(new_color)
 
     return bit_data
