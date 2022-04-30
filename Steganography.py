@@ -37,9 +37,9 @@ def encrypt(img: Image, msg: str):
         new_color = int(bit_data[idx//3][idx % 3][:-2] + b, 2) # converting the binary to an integer
         bit_data[idx//3][idx % 3] = bytes(new_color) # converting the integer to bytes
 
-    bit_data = "".join(bit_data)
-    bit_data = bit_data.encode()
-    secret_img = Image.open(io.BytesIO(bit_data))
-    secret_img.show()
+
+
+    print(bit_data[0])
+
 
     return bit_data
