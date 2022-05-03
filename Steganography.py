@@ -1,11 +1,6 @@
-import codecs
 from PIL import Image
 import numpy as np
-import os
-import io
 
-
-n = 10
 
 def open(path: str) -> Image:
     try:
@@ -46,18 +41,19 @@ def decrypt(img: Image) -> str:
     img_data = np.asarray(img)
 
     img_data = img_data.flatten()
+
+    print("HELLO WORLD")
+    print(list(img_data).index(0))
+    print("HELLO WORLD")
+
     for p in img_data:
-        img_chars.append(bin(p)[-2:])
-        
+        new_num = bin(p)[2:]  # get rid of the 0b
+        new_num = new_num.zfill(2)[-2:]  # save the last two bits
+        img_chars.append(new_num)
+
     img_chars = "".join(img_chars)
 
     for i in range(0, (len(img_chars)//8)*8, 8):
-        try:
-            img_str += chr(int(img_chars[i:i+8],2))
-        except:
-            break
+        img_str += chr(int(img_chars[i:i+8], 2))
 
-    return img_str        
-
-
-
+    return img_str
