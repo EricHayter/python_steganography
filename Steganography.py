@@ -1,6 +1,14 @@
 from PIL import Image
 import numpy as np
 
+'''
+TODO
+- create a difference picture to find the differences in picture
+- add a shift option to the decryption
+- add optional parameters to the encrypt and decrypt functions for shifts
+- add functionality to pictures that may not have 8 bit RGB
+'''
+
 
 def open(path: str) -> Image:
     try:
@@ -9,7 +17,7 @@ def open(path: str) -> Image:
         raise
 
 
-def encrypt(img: Image, msg: str):
+def encrypt(img: Image, msg: str) -> Image:
     img_data = np.asarray(img)
     img_dim = img_data.shape
     bit_msg = []
@@ -41,10 +49,6 @@ def decrypt(img: Image) -> str:
     img_data = np.asarray(img)
 
     img_data = img_data.flatten()
-
-    print("HELLO WORLD")
-    print(list(img_data).index(0))
-    print("HELLO WORLD")
 
     for p in img_data:
         new_num = bin(p)[2:]  # get rid of the 0b
