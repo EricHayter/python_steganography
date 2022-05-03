@@ -1,7 +1,11 @@
+import codecs
 from PIL import Image
+import numpy as np
 import os
 import io
 
+
+n = 10
 
 def open(path: str) -> Image:
     try:
@@ -11,35 +15,55 @@ def open(path: str) -> Image:
 
 
 def encrypt(img: Image, msg: str):
-    img_size = img.size
-    rgb_data = list(img.getdata())
-    bit_data = []
+    img_data = np.asarray(img)
+    img_dim = img_data.shape
     bit_msg = []
 
     # turning our message into a binary representation
-    msg = msg.encode('ascii')
     for c in msg:
-        bit_msg.append(bin(c)[2:])
+        bit_msg.append(bin(ord(c))[2:])
 
-    # TODO check around here if the image can even contain the message
+    # TODO have some sort of issue here with encryption it looks like
+    print(bit_msg[0])
+
     bit_msg = "".join(bit_msg)
+
     # spliting the binary string every two bits
     bit_msg = [bit_msg[i:i+2] for i in range(0, len(bit_msg), 2)]
 
-    # could be better performance here since we shouldn't in theory require all of the pixels to be encodedS
-    for p in rgb_data:
-        r_value = bin(p[0])[2:]  # stripping the leading '0b'
-        g_value = bin(p[1])[2:]
-        b_value = bin(p[2])[2:]
-        bit_data.append([r_value, g_value, b_value])
+    print(bit_msg[0:n])
 
-    for idx, b in enumerate(bit_msg):
-        new_color = int(bit_data[idx//3][idx % 3][:-2] + b, 2) # converting the binary to an integer
-        bit_data[idx//3][idx % 3] = bytes(new_color) # converting the integer to bytes
+    # flatten for ease of use
+    img_data = img_data.flatten()
 
+    for idx, bit in enumerate(bit_msg):
+        new_val = int(bin(img_data[idx])[2:-2] + bit, 2)
+        img_data[idx] = new_val
 
+    img_data = img_data.reshape(img_dim)
 
-    print(bit_data[0])
+    return Image.fromarray(img_data)
 
 
-    return bit_data
+def decrypt(img: Image) -> str:
+    img_chars = []
+    img_str = ""
+    img_data = np.asarray(img)
+
+    img_data = img_data.flatten()
+    for p in img_data:
+        img_chars.append(bin(p)[-2:])
+        
+    print(img_chars[:n])
+
+    img_chars = "".join(img_chars)
+    for i in range(0, len(img_chars), 7):
+        print(chr(int(img_chars[i:i+7],2)))
+        img_str += chr(int(img_chars[i:i+7],2))
+        if i > 70:
+            break
+
+    return img_str        
+
+
+
