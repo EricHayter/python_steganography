@@ -9,6 +9,12 @@ TODO
 - add functionality to pictures that may not have 8 bit RGB
 '''
 
+def spectrum(start_clr:[], end_clr:[], number_of_colors:int):
+    start_clr = np.asarray(start_clr)
+    end_clr = np.asarray(end_clr)
+    clr_diff = (end_clr - start_clr)/(number_of_colors-1)
+    return [start_clr+i*clr_diff for i in range(0,number_of_colors)]
+
 def open(path: str) -> Image:
     try:
         return Image.open(path)
@@ -41,7 +47,6 @@ def encrypt(img: Image, msg: str) -> Image:
 
     return Image.fromarray(img_data)
 
-
 def decrypt(img: Image) -> str:
     img_chars = []
     img_str = ""
@@ -60,3 +65,32 @@ def decrypt(img: Image) -> str:
         img_str += chr(int(img_chars[i:i+8], 2))
 
     return img_str
+
+def heat_map(img1: Image, img2: Image):
+    BLACK_TO_WHITE = spectrum([0,0,0],[255,255,255],10)
+
+
+    img1_data = np.asarray(img1)
+    img2_data = np.asarray(img2)
+
+    # get the dimensions of the image
+    IMG_DIM = img2_data.shape
+
+    # find the difference in RGB values
+    diff = img1_data - img2_data
+
+    # flattening for ease of use
+    diff = diff.reshape(-1,3)
+
+
+    diff = np.asarray(list(map(lambda p: BLACK_TO_WHITE[sum(p)],diff))).astype('uint8')
+
+    diff = diff.reshape(IMG_DIM)
+
+    return Image.fromarray(diff)
+
+def check_same_image(img1: Image, img2: Image) -> bool:
+    if img1 is img2:
+        return True
+    else:
+        return False
