@@ -1,12 +1,20 @@
 import Steganography
+import numpy as np
 
 
 def main():
     PATH = "Panda.jpg"
 
-
     original_img = Steganography.open(PATH)
-    img = Steganography.encrypt(original_img, "Hello world")
+
+    original_img.show()
+
+    with open('romeoandjuliet.txt') as str:
+        str = ''.join(str.readlines()).replace('\n','')
+        img = Steganography.encrypt(original_img, str)
+
+    img.show()
+
     img_map = Steganography.heat_map(original_img,img)
     img_map.show()
 

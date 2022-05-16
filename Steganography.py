@@ -21,7 +21,6 @@ def open(path: str) -> Image:
     except:
         raise
 
-
 def encrypt(img: Image, msg: str) -> Image:
     img_data = np.asarray(img)
     img_dim = img_data.shape
@@ -67,24 +66,21 @@ def decrypt(img: Image) -> str:
     return img_str
 
 def heat_map(img1: Image, img2: Image):
-    BLACK_TO_WHITE = spectrum([0,0,0],[255,255,255],10)
+    BLACK_TO_WHITE = spectrum([255,255,0],[0,0,0],10)
 
-
-    img1_data = np.asarray(img1)
-    img2_data = np.asarray(img2)
+    img1_data = np.asarray(img1).astype(np.float)
+    img2_data = np.asarray(img2).astype(np.float)
 
     # get the dimensions of the image
     IMG_DIM = img2_data.shape
 
     # find the difference in RGB values
-    diff = img1_data - img2_data
+    diff = np.abs(img1_data - img2_data).astype(np.uint8)
 
     # flattening for ease of use
     diff = diff.reshape(-1,3)
 
-
-    diff = np.asarray(list(map(lambda p: BLACK_TO_WHITE[sum(p)],diff))).astype('uint8')
-
+    diff = np.asarray(list(map(lambda p: BLACK_TO_WHITE[sum(p)],diff))).astype(np.uint8)
     diff = diff.reshape(IMG_DIM)
 
     return Image.fromarray(diff)
