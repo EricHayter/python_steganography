@@ -3,7 +3,7 @@ import numpy as np
 
 
 def main():
-    PATH = "Balloon.jpg"
+    PATH = "Panda.jpg"
 
     original_img = Steganography.open(PATH)
 

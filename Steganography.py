@@ -48,13 +48,11 @@ def encrypt(img: Image, msg: str) -> Image:
     img_data = img_data.flatten()
 
     for idx, bit in enumerate(bit_msg):
-        print(bin(img_data[idx]))
-        print(img_data[idx])
-        print(img_data[idx])
         new_val = int(bin(img_data[idx])[2:-2] + bit, 2)
         img_data[idx] = new_val
 
-        img_data = img_data.reshape(img_dim)
+    
+    img_data = img_data.reshape(img_dim)
 
     return Image.fromarray(img_data)
 
