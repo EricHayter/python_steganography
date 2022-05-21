@@ -48,12 +48,14 @@ def encrypt(img: Image, msg: str) -> Image:
     img_data = img_data.flatten()
 
     for idx, bit in enumerate(bit_msg):
-        new_val = int(bin(img_data[idx])[2:-2] + bit, 2)
+        # converting the values to binary and trimming
+        new_val = bin(img_data[idx])[2:-2] + bit
+
+        # converting the new binary back to an int
+        new_val = int(new_val,2)
         img_data[idx] = new_val
 
-    
     img_data = img_data.reshape(img_dim)
-
     return Image.fromarray(img_data)
 
 
@@ -98,15 +100,15 @@ def heat_map(
     diff = diff.reshape(-1, 3)
 
     if binary:
-        diff = np.asarray(list(map(lambda p: color_scheme[sum(p)], diff))).astype(
-            np.uint8
-        )
-    else:
         diff = np.asarray(
             list(
                 map(lambda p: color_scheme[-1] if sum(p) > 0 else color_scheme[0], diff)
             )
         ).astype(np.uint8)
+    else:
+        diff = np.asarray(list(map(lambda p: color_scheme[sum(p)], diff))).astype(
+            np.uint8
+        )
 
     diff = diff.reshape(IMG_DIM)
 
