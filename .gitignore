@@ -1,2 +1,7 @@
 test
 __pycache__
+bin
+include
+.git
+.mypy_cache
+lib64
